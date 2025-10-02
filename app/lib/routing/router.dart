@@ -26,7 +26,7 @@ import 'routes.dart';
 /// Listens to changes in [AuthTokenRepository] to redirect the user
 /// to /login when the user logs out.
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: Routes.login,
   debugLogDiagnostics: true,
   redirect: _redirect,
   refreshListenable: authRepository,

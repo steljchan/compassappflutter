@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
 import '../../../../data/repositories/auth/auth_repository.dart';
 import '../../../../utils/command.dart';
 import '../../../../utils/result.dart';
 
-class LoginViewModel {
+class LoginViewModel extends ChangeNotifier {
   LoginViewModel({required AuthRepository authRepository})
     : _authRepository = authRepository {
     login = Command1<void, (String email, String password)>(_login);
@@ -17,7 +18,7 @@ class LoginViewModel {
   final AuthRepository _authRepository;
   final _log = Logger('LoginViewModel');
 
-  late Command1 login;
+  late Command1<void, (String, String)> login;
 
   Future<Result<void>> _login((String, String) credentials) async {
     final (email, password) = credentials;
@@ -25,9 +26,14 @@ class LoginViewModel {
       email: email,
       password: password,
     );
+
     if (result is Error<void>) {
       _log.warning('Login failed! ${result.error}');
+    } else {
+      _log.fine('Login success for $email');
     }
+
+    notifyListeners(); // penting biar UI bisa update
     return result;
   }
 }
